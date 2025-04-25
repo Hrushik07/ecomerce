@@ -35,7 +35,7 @@ const blogs = [
 
 const PopularBlogs = () => {
   return (
-    <div className="bg-white p-5 w-[23rem] mt-4 border-0 ml-5 rounded">
+    <div className="bg-white p-5 w-full sm:w-[23rem] mt-4 border-0 sm:ml-5 rounded">
       <h2 className="text-xl font-bold mb-5">Popular Blogs</h2>
 
       <ul>
@@ -46,7 +46,7 @@ const PopularBlogs = () => {
             </div>
 
             <span className="text-gray-600">Published by {blog.authors}</span>
-            <div className="flex items-center mt-2">
+            <div className="flex items-center mt-2 flex-wrap gap-2">
               <MessageCircle size={16} />
               <span className="text-gray-500 mr-5 ml-1">{blog.likes}</span>
 
@@ -58,6 +58,6 @@ const PopularBlogs = () => {
       </ul>
     </div>
   );
-}
+};
 
-export default PopularBlogs
+export default PopularBlogs;

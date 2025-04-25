@@ -18,14 +18,14 @@ const MainComponent = () => {
     let url = `https://dummyjson.com/products?limit=${itemsPerPage}&skip=${
       (currentPage - 1) * itemsPerPage
     }`;
-    if (  keyword) {
+    if (keyword) {
       url = `https://dummyjson.com/products/search?q=${keyword}`;
     }
 
     axios
       .get(url)
       .then((response) => {
-        setProducts(response.data.products);
+        setProducts(response.data.products || []);
       })
       .catch((error) => {
         console.error("Error fetching products:", error);
@@ -82,7 +82,10 @@ const MainComponent = () => {
   const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
   const handlePageChange = (page: number) => {
-    if (page > 0 && page <= totalPages) setCurrentPage(page);
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top on page change
+    }
   };
 
   const getPaginationButtons = () => {
@@ -105,7 +108,7 @@ const MainComponent = () => {
   };
 
   return (
-    <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] p-5 ">
+    <section className="xl:w-[55rem] lg:w-[55rem] sm:w-[40rem] xs:w-[20rem] ">
       <div className="mb-5">
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <div className="relative mb-5 mt-5">
@@ -121,48 +124,24 @@ const MainComponent = () => {
 
             {dropdownOpen && (
               <div className="absolute bg-white border border-gray-300 rounded mt-2 w-full sm:w-40 z-10">
-                <button
-                  onClick={() => {
-                    setFilter("all");
-                    setDropdownOpen(false);
-                  }}
-                  className="block px-4 py-2 w-full text-left hover:bg-gray-200"
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => {
-                    setFilter("cheap");
-                    setDropdownOpen(false);
-                  }}
-                  className="block px-4 py-2 w-full text-left hover:bg-gray-200"
-                >
-                  Cheap
-                </button>
-                <button
-                  onClick={() => {
-                    setFilter("expensive");
-                    setDropdownOpen(false);
-                  }}
-                  className="block px-4 py-2 w-full text-left hover:bg-gray-200"
-                >
-                  Expensive
-                </button>
-                <button
-                  onClick={() => {
-                    setFilter("popular");
-                    setDropdownOpen(false);
-                  }}
-                  className="block px-4 py-2 w-full text-left hover:bg-gray-200"
-                >
-                  Popular
-                </button>
+                {["all", "cheap", "expensive", "popular"].map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => {
+                      setFilter(f);
+                      setDropdownOpen(false);
+                    }}
+                    className="block px-4 py-2 w-full text-left hover:bg-gray-200"
+                  >
+                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                  </button>
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-11 gap-y-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-6">
           {filteredProducts.map((product) => (
             <BookCard
               key={product.id}
@@ -174,7 +153,7 @@ const MainComponent = () => {
           ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-center mt-5">
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-5 space-y-2 sm:space-y-0">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
